@@ -1,13 +1,14 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+//using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using TestNinja.Fundamentals;
 
 namespace TestNinja.UnitTests
 {
-    [TestClass]
+    [TestFixture]
     public class ReservationTests
     {
-        [TestMethod]
+        [Test]
         public void CanBeCancelledBy_UserIsAdmin_ReturnsTrue() // All test methods should be "public void"
         {
             // "Triple A Convention"
@@ -21,7 +22,7 @@ namespace TestNinja.UnitTests
             Assert.IsTrue(result);
         }
 
-        [TestMethod]
+        [Test]
         public void CanBeCancelledBy_NonAdminMadeReservation_ReturnsTrue()
         {
             var reservation = new Reservation();
@@ -29,9 +30,11 @@ namespace TestNinja.UnitTests
             reservation.MadeBy = user;
             var result = reservation.CanBeCancelledBy(user);
             Assert.IsTrue(result);
+            Assert.That(result, Is.True); // option 2 in NUnit
+            Assert.That(result == true); // option 3 in NUnit
         }
 
-        [TestMethod]
+        [Test]
         public void CanBeCancelledBy_NonAdminNotMadeReservation_ReturnsFalse()
         {
             var reservation = new Reservation();
