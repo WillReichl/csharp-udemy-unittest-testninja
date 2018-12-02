@@ -8,7 +8,7 @@ namespace TestNinja.UnitTests
     public class ReservationTests
     {
         [TestMethod]
-        public void CanBeCancelledBy_UserIsAdmin_ReturnsTrue()
+        public void CanBeCancelledBy_UserIsAdmin_ReturnsTrue() // All test methods should be "public void"
         {
             // "Triple A Convention"
             // Arrange: Create objects we want to test
