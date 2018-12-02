@@ -20,5 +20,25 @@ namespace TestNinja.UnitTests
             // Assert
             Assert.IsTrue(result);
         }
+
+        [TestMethod]
+        public void CanBeCancelledBy_NonAdminMadeReservation_ReturnsTrue()
+        {
+            var reservation = new Reservation();
+            var user = new User { IsAdmin = false };
+            reservation.MadeBy = user;
+            var result = reservation.CanBeCancelledBy(user);
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void CanBeCancelledBy_NonAdminNotMadeReservation_ReturnsFalse()
+        {
+            var reservation = new Reservation();
+            var user = new User { IsAdmin = false };
+            reservation.MadeBy = user;
+            var result = reservation.CanBeCancelledBy(new User { IsAdmin = false }); // different user
+            Assert.IsFalse(result);
+        }
     }
 }
