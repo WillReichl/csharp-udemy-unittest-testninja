@@ -18,6 +18,7 @@ namespace TestNinja.UnitTests
         // TearDown -- called after each test -- often used w/ integration tests, e.g. restore data in database to prior state
 
         [Test]
+        [Ignore("Because I needed an example!")]
         public void Add_WhenCalled_ReturnSumOfArguments()
         {
             var result = _math.Add(1, 2);
