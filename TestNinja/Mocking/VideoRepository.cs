@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TestNinja.Mocking
 {
-    public class VideoRepository
+    public class VideoRepository : IVideoRepository
     {
         public IEnumerable<Video> GetUnprocessedVideos()
         {

@@ -10,10 +10,12 @@ namespace TestNinja.Mocking
     public class VideoService
     {
         public IFileReader _fileReader;
+        private IVideoRepository _videoRepository;
 
-        public VideoService(IFileReader fileReader = null)
+        public VideoService(IFileReader fileReader = null, IVideoRepository videoRepository = null)
         {
             _fileReader = fileReader ?? new FileReader(); // use real FileReader unless other is injected
+            _videoRepository = videoRepository ?? new VideoRepository();
         }
 
         public string ReadVideoTitle()
@@ -28,7 +30,7 @@ namespace TestNinja.Mocking
         public string GetUnprocessedVideosAsCsv()
         {
             var videoIds = new List<int>();
-            var videos = new VideoRepository().GetUnprocessedVideos(); // still tightly coupled to this class
+            var videos = _videoRepository.GetUnprocessedVideos(); // no longer tightly coupled, can use DI for testing!
             foreach (var v in videos)
                 videoIds.Add(v.Id);
 
