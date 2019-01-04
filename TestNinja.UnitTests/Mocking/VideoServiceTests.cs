@@ -13,15 +13,16 @@ namespace TestNinja.UnitTests.Mocking
     [TestFixture]
     public class VideoServiceTests
     {
-        private VideoService _service;
+        private VideoService _videoService;
         private Mock<IFileReader> _mockFileReader;
-        
+        private Mock<IVideoRepository> _mockVideoRepository;
 
-       [SetUp]
+        [SetUp]
         public void SetUp()
         {
             _mockFileReader = new Mock<IFileReader>();
-            _service = new VideoService(_mockFileReader.Object);
+            _mockVideoRepository = new Mock<IVideoRepository>();
+            _videoService = new VideoService(_mockFileReader.Object, _mockVideoRepository.Object);
         }
 
         [Test]
@@ -29,7 +30,7 @@ namespace TestNinja.UnitTests.Mocking
         {
             _mockFileReader.Setup(mfr => mfr.Read("video.txt")).Returns("");
 
-            var result = _service.ReadVideoTitle();
+            var result = _videoService.ReadVideoTitle();
 
             Assert.That(result, Does.Contain("error").IgnoreCase);
         }
@@ -37,19 +38,37 @@ namespace TestNinja.UnitTests.Mocking
         [Test]
         public void GetUnprocessedVideosAsCsv_OneUnprocesssedVideo_ReturnsSingleVal ()
         {
+            _mockVideoRepository.Setup(r => r.GetUnprocessedVideos()).Returns(new List<Video> {
+                new Video { Id = 1 }
+            }); // empty list
 
+            var result = _videoService.GetUnprocessedVideosAsCsv();
+
+            Assert.That(result, Is.EqualTo("1"));
         }
 
         [Test]
         public void GetUnprocessedVideosAsCsv_ThreeUnprocesssedVideos_ReturnsCsvString ()
         {
+            _mockVideoRepository.Setup(r => r.GetUnprocessedVideos()).Returns(new List<Video> {
+                new Video { Id = 1 },
+                new Video { Id = 2 },
+                new Video { Id = 3 }
+            }); // empty list
 
+            var result = _videoService.GetUnprocessedVideosAsCsv();
+
+            Assert.That(result, Is.EqualTo("1,2,3"));
         }
 
         [Test]
-        public void GetUnprocessedVideosAsCsv_NoUnprocessedVideos_ReturnsEmptyString ()
+        public void GetUnprocessedVideosAsCsv_AllVideosAreProcessed_ReturnsEmptyString ()
         {
+            _mockVideoRepository.Setup(r => r.GetUnprocessedVideos()).Returns(new List<Video>()); // empty list
 
+            var result = _videoService.GetUnprocessedVideosAsCsv();
+
+            Assert.That(result, Is.EqualTo(""));
         }
 
     }
