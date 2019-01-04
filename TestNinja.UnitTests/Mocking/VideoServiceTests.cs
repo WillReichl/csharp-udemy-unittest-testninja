@@ -15,6 +15,7 @@ namespace TestNinja.UnitTests.Mocking
     {
         private VideoService _service;
         private Mock<IFileReader> _mockFileReader;
+        
 
        [SetUp]
         public void SetUp()
@@ -31,6 +32,24 @@ namespace TestNinja.UnitTests.Mocking
             var result = _service.ReadVideoTitle();
 
             Assert.That(result, Does.Contain("error").IgnoreCase);
+        }
+
+        [Test]
+        public void GetUnprocessedVideosAsCsv_OneUnprocesssedVideo_ReturnsSingleVal ()
+        {
+
+        }
+
+        [Test]
+        public void GetUnprocessedVideosAsCsv_ThreeUnprocesssedVideos_ReturnsCsvString ()
+        {
+
+        }
+
+        [Test]
+        public void GetUnprocessedVideosAsCsv_NoUnprocessedVideos_ReturnsEmptyString ()
+        {
+
         }
 
     }
