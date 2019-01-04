@@ -11,6 +11,7 @@
 
         public int PlaceOrder(Order order)
         {
+            //return 0; // uncomment to demonstrate a test failure
             var orderId = _storage.Store(order);
             
             // Some other work
