@@ -69,7 +69,6 @@
     <Compile Include="Fundamentals\CustomerControllerTests.cs" />
     <Compile Include="Fundamentals\DemeritPointsCalculatorTests.cs" />
     <Compile Include="Fundamentals\ErrorLoggerTests.cs" />
-    <Compile Include="Fakes\FakeFileReader.cs" />
     <Compile Include="Fundamentals\FizzBuzzTests.cs" />
     <Compile Include="Fundamentals\HtmlFormatterTests.cs" />
     <Compile Include="Fundamentals\MathTests.cs" />
@@ -85,6 +84,9 @@
       <Project>{7328740E-4B78-464F-8352-65D887F2145F}</Project>
       <Name>TestNinja</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Fakes\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
