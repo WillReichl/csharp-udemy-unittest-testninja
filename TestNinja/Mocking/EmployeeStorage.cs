@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TestNinja.Mocking
 {
-    public class EmployeeStorage
+    public class EmployeeStorage : IEmployeeStorage
     {
         private EmployeeContext _db;
 

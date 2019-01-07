@@ -64,6 +64,7 @@
     <Compile Include="Mocking\EmployeeStorage.cs" />
     <Compile Include="Mocking\FileDownlaoder.cs" />
     <Compile Include="Mocking\FileReader.cs" />
+    <Compile Include="Mocking\IEmployeeStorage.cs" />
     <Compile Include="Mocking\IFileDownlaoder.cs" />
     <Compile Include="Mocking\IFileReader.cs" />
     <Compile Include="Mocking\InstallerHelper.cs" />
