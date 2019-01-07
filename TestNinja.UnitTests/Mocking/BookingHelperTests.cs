@@ -24,7 +24,7 @@ namespace TestNinja.UnitTests.Mocking
                 Id = 2,
                 ArrivalDate = ArriveOn(2017, 1, 15), // 15-JAN-2017 2:00PM
                 DepartureDate = DepartOn(2017, 1, 20),
-                Reference = "a"
+                Reference = "existing"
             };
             _mockBookingRepo.Setup(r => r.GetActiveBookings(1)).Returns(new List<Booking>
             {
@@ -46,12 +46,40 @@ namespace TestNinja.UnitTests.Mocking
             Assert.That(result, Is.EqualTo(""));
         }
 
+        [Test]
+        public void OverlappingBookingsExist_BookingStartsBeforeFinishesDuringAnExistingBooking_ReturnsBookingReferenceString()
+        {
+            var currentBooking = new Booking
+            {
+                Id = 1,
+                ArrivalDate = Before(_existingBooking.ArrivalDate, daysBefore: 2), // 15-JAN-2017 2:00PM
+                DepartureDate = After(_existingBooking.ArrivalDate, daysAfter: 1),
+                Reference = "current"
+            };
+            var result = BookingHelper.OverlappingBookingsExist(currentBooking, _mockBookingRepo.Object);
+            Assert.That(result, Is.EqualTo(_existingBooking.Reference));
+        }
+
+        [Test]
+        public void OverlappingBookingsExist_BookingStartsBeforeFinishesAfterAnExistingBooking_ReturnsBookingReferenceString()
+        {
+            var currentBooking = new Booking
+            {
+                Id = 1,
+                ArrivalDate = Before(_existingBooking.ArrivalDate, daysBefore: 2), // 15-JAN-2017 2:00PM
+                DepartureDate = After(_existingBooking.DepartureDate, daysAfter: 1),
+                Reference = "current"
+            };
+            var result = BookingHelper.OverlappingBookingsExist(currentBooking, _mockBookingRepo.Object);
+            Assert.That(result, Is.EqualTo(_existingBooking.Reference));
+        }
+
         private DateTime Before(DateTime dateTime, int daysBefore)
         {
             return dateTime.AddDays(daysBefore * -1);
         }
 
-        private DateTime After(DateTime dateTime)
+        private DateTime After(DateTime dateTime, int daysAfter)
         {
             return dateTime.AddDays(1);
         }
