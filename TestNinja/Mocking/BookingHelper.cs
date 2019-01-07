@@ -6,10 +6,12 @@ namespace TestNinja.Mocking
 {
     public static class BookingHelper
     {
-        public static string OverlappingBookingsExist(Booking booking)
+        public static string OverlappingBookingsExist(Booking booking, IBookingRepository bookingRepository)
         {
             if (booking.Status == "Cancelled")
                 return string.Empty;
+
+            var bookings = bookingRepository.GetActiveBookings(booking.Id);
 
             // This part is NOT refactored because it's not really an external dependency at this point, and
             // and it is the actual business logic that we're requesting with a call to this method.
