@@ -11,12 +11,8 @@ namespace TestNinja.Mocking
             if (booking.Status == "Cancelled")
                 return string.Empty;
 
-            var unitOfWork = new UnitOfWork();
-            var bookings =
-                unitOfWork.Query<Booking>()
-                    .Where(
-                        b => b.Id != booking.Id && b.Status != "Cancelled");
-
+            // This part is NOT refactored because it's not really an external dependency at this point, and
+            // and it is the actual business logic that we're requesting with a call to this method.
             var overlappingBooking =
                 bookings.FirstOrDefault(
                     b =>
