@@ -65,11 +65,13 @@
     <Compile Include="Mocking\EmployeeStorage.cs" />
     <Compile Include="Mocking\FileDownlaoder.cs" />
     <Compile Include="Mocking\FileReader.cs" />
+    <Compile Include="Mocking\HousekeeperHelper.cs" />
     <Compile Include="Mocking\IBookingRepository.cs" />
     <Compile Include="Mocking\IEmployeeStorage.cs" />
     <Compile Include="Mocking\IFileDownlaoder.cs" />
     <Compile Include="Mocking\IFileReader.cs" />
     <Compile Include="Mocking\InstallerHelper.cs" />
+    <Compile Include="Mocking\IUnitOfWork.cs" />
     <Compile Include="Mocking\IVideoRepository.cs" />
     <Compile Include="Mocking\OrderService.cs" />
     <Compile Include="Mocking\Product.cs" />
