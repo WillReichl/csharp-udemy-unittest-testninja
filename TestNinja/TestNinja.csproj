@@ -71,11 +71,13 @@
     <Compile Include="Mocking\IFileDownlaoder.cs" />
     <Compile Include="Mocking\IFileReader.cs" />
     <Compile Include="Mocking\InstallerHelper.cs" />
+    <Compile Include="Mocking\IStatementGenerator.cs" />
     <Compile Include="Mocking\IUnitOfWork.cs" />
     <Compile Include="Mocking\IVideoRepository.cs" />
     <Compile Include="Mocking\OrderService.cs" />
     <Compile Include="Mocking\Product.cs" />
     <Compile Include="Mocking\Program.cs" />
+    <Compile Include="Mocking\StatementGenerator.cs" />
     <Compile Include="Mocking\VideoRepository.cs" />
     <Compile Include="Mocking\VideoService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
