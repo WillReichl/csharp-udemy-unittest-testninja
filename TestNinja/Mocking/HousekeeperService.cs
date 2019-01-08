@@ -6,14 +6,14 @@ using System.Text;
 
 namespace TestNinja.Mocking
 {
-    public class HousekeeperHelper
+    public class HousekeeperService
     {
         private IUnitOfWork _unitOfWork;
         private IStatementGenerator _statementGenerator;
         private IEmailSender _emailSender;
         private IXtraMessageBox _xtraMessageBox;
 
-        public HousekeeperHelper(IUnitOfWork unitOfWork, IStatementGenerator statementGenerator, IEmailSender emailSender,
+        public HousekeeperService(IUnitOfWork unitOfWork, IStatementGenerator statementGenerator, IEmailSender emailSender,
             IXtraMessageBox xtraMessageBox)
         {
             _unitOfWork = unitOfWork;
@@ -22,7 +22,7 @@ namespace TestNinja.Mocking
             _xtraMessageBox = xtraMessageBox;
         }
 
-        public bool SendStatementEmails(DateTime statementDate)
+        public void SendStatementEmails(DateTime statementDate)
         {
             var housekeepers = _unitOfWork.Query<Housekeeper>();
 
@@ -50,8 +50,6 @@ namespace TestNinja.Mocking
                         MessageBoxButtons.OK);
                 }
             }
-
-            return true;
         }
     }
 
