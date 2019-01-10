@@ -16,14 +16,26 @@ namespace TestNinja.UnitTests.Mocking
         private Mock<IStatementGenerator> _statementGenerator;
         private Mock<IEmailSender> _emailSender;
         private Mock<IXtraMessageBox> _xtraMessageBox;
+        private HousekeeperService _service;
+        private Housekeeper _housekeeper;
+        private DateTime _statementDate = new DateTime (2017, 1, 1);
 
         [SetUp]
         public void SetUp ()
         {
+            _housekeeper = new Housekeeper { Email = "a", FullName = "b", Oid = 1, StatementEmailBody = "c" };
+            
             _unitOfWork = new Mock<IUnitOfWork>();
             _statementGenerator = new Mock<IStatementGenerator>();
             _emailSender = new Mock<IEmailSender>();
             _xtraMessageBox = new Mock<IXtraMessageBox>();
+
+            _service = new HousekeeperService(
+                _unitOfWork.Object, 
+                _statementGenerator.Object, 
+                _emailSender.Object, 
+                _xtraMessageBox.Object);
+            
         }
 
         [Test]
@@ -31,22 +43,13 @@ namespace TestNinja.UnitTests.Mocking
         {
             _unitOfWork.Setup(uow => uow.Query<Housekeeper>()).Returns(new List<Housekeeper>
             {
-                new Housekeeper { Email = "a", FullName = "b", Oid = 1, StatementEmailBody = "c" }
+                _housekeeper
             }.AsQueryable());
-
-            var service = new HousekeeperService(
-                _unitOfWork.Object, 
-                _statementGenerator.Object, 
-                _emailSender.Object, 
-                _xtraMessageBox.Object);
-            var statementDate = new DateTime (2017, 1, 1);
-
-            service.SendStatementEmails(statementDate);
-
+            _service.SendStatementEmails(_statementDate);
             _statementGenerator.Verify(sg => sg.SaveStatement(
-                1, // oid
-                "b", // name
-                statementDate)); // statement date
+                _housekeeper.Oid, // oid
+                _housekeeper.FullName, // name
+                _statementDate)); // statement date
         }
     }
 }
