@@ -29,6 +29,10 @@ namespace TestNinja.UnitTests.Mocking
             _statementGenerator = new Mock<IStatementGenerator>();
             _emailSender = new Mock<IEmailSender>();
             _xtraMessageBox = new Mock<IXtraMessageBox>();
+            _unitOfWork.Setup(uow => uow.Query<Housekeeper>()).Returns(new List<Housekeeper>
+            {
+                _housekeeper
+            }.AsQueryable());
 
             _service = new HousekeeperService(
                 _unitOfWork.Object, 
@@ -41,15 +45,20 @@ namespace TestNinja.UnitTests.Mocking
         [Test]
         public void SendStatementEmails_WhenCalled_GenerateStatements()
         {
-            _unitOfWork.Setup(uow => uow.Query<Housekeeper>()).Returns(new List<Housekeeper>
-            {
-                _housekeeper
-            }.AsQueryable());
             _service.SendStatementEmails(_statementDate);
-            _statementGenerator.Verify(sg => sg.SaveStatement(
-                _housekeeper.Oid, // oid
-                _housekeeper.FullName, // name
-                _statementDate)); // statement date
+            _statementGenerator.Verify(sg => sg.SaveStatement(_housekeeper.Oid, _housekeeper.FullName, _statementDate)); 
+        }
+
+        [Test]
+        [TestCase(null)]
+        [TestCase(" ")]
+        [TestCase("")]
+        public void SendStatementEmails_HousekeepeEmailNotProvided_DoNotGenerateStatement(string housekeeperEmail)
+        {
+            _housekeeper.Email = housekeeperEmail;
+            _service.SendStatementEmails(_statementDate);
+            // Ensure SaveStatement method is never called
+            _statementGenerator.Verify(sg => sg.SaveStatement(_housekeeper.Oid, _housekeeper.FullName, _statementDate), Times.Never); 
         }
     }
 }
