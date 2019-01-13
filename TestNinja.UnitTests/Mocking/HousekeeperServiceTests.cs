@@ -19,6 +19,7 @@ namespace TestNinja.UnitTests.Mocking
         private HousekeeperService _service;
         private Housekeeper _housekeeper;
         private DateTime _statementDate = new DateTime (2017, 1, 1);
+        private readonly string _statementFileName = "filename";
 
         [SetUp]
         public void SetUp ()
@@ -59,6 +60,44 @@ namespace TestNinja.UnitTests.Mocking
             _service.SendStatementEmails(_statementDate);
             // Ensure SaveStatement method is never called
             _statementGenerator.Verify(sg => sg.SaveStatement(_housekeeper.Oid, _housekeeper.FullName, _statementDate), Times.Never); 
+        }
+
+        [Test]
+        [TestCase(null)]
+        [TestCase(" ")]
+        [TestCase("")]
+        public void SendStatementEmails_StatementFileNameIsNullOrWhitespace_DoNotEmailStatement(string statementFileName)
+        {
+
+            _statementGenerator.Setup(sg =>
+                sg.SaveStatement(_housekeeper.Oid, _housekeeper.FullName, _statementDate)).Returns(statementFileName);
+
+            _service.SendStatementEmails(_statementDate);
+
+            _emailSender.Verify(es =>
+                es.EmailFile(
+                    _housekeeper.Email,
+                    _housekeeper.StatementEmailBody,
+                    statementFileName,
+                    It.IsAny<string>()
+                ), Times.Never());
+        }
+
+        [Test]
+        public void SendStatementEmails_WhenCalled_EmailTheStatement ()
+        {
+            _statementGenerator.Setup(sg =>
+                sg.SaveStatement(_housekeeper.Oid, _housekeeper.FullName, _statementDate)).Returns(_statementFileName);
+
+            _service.SendStatementEmails(_statementDate);
+
+            _emailSender.Verify(es =>
+                es.EmailFile(
+                    _housekeeper.Email,
+                    _housekeeper.StatementEmailBody,
+                    _statementFileName,
+                    It.IsAny<string>()
+                ));
         }
     }
 }
