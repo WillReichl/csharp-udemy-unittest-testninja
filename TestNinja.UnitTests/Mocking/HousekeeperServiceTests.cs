@@ -18,14 +18,14 @@ namespace TestNinja.UnitTests.Mocking
         private Mock<IXtraMessageBox> _xtraMessageBox;
         private HousekeeperService _service;
         private Housekeeper _housekeeper;
-        private DateTime _statementDate = new DateTime (2017, 1, 1);
+        private DateTime _statementDate = new DateTime(2017, 1, 1);
         private readonly string _statementFileName = "filename";
 
         [SetUp]
-        public void SetUp ()
+        public void SetUp()
         {
             _housekeeper = new Housekeeper { Email = "a", FullName = "b", Oid = 1, StatementEmailBody = "c" };
-            
+
             _unitOfWork = new Mock<IUnitOfWork>();
             _statementGenerator = new Mock<IStatementGenerator>();
             _emailSender = new Mock<IEmailSender>();
@@ -36,18 +36,18 @@ namespace TestNinja.UnitTests.Mocking
             }.AsQueryable());
 
             _service = new HousekeeperService(
-                _unitOfWork.Object, 
-                _statementGenerator.Object, 
-                _emailSender.Object, 
+                _unitOfWork.Object,
+                _statementGenerator.Object,
+                _emailSender.Object,
                 _xtraMessageBox.Object);
-            
+
         }
 
         [Test]
         public void SendStatementEmails_WhenCalled_GenerateStatements()
         {
             _service.SendStatementEmails(_statementDate);
-            _statementGenerator.Verify(sg => sg.SaveStatement(_housekeeper.Oid, _housekeeper.FullName, _statementDate)); 
+            _statementGenerator.Verify(sg => sg.SaveStatement(_housekeeper.Oid, _housekeeper.FullName, _statementDate));
         }
 
         [Test]
@@ -59,7 +59,7 @@ namespace TestNinja.UnitTests.Mocking
             _housekeeper.Email = housekeeperEmail;
             _service.SendStatementEmails(_statementDate);
             // Ensure SaveStatement method is never called
-            _statementGenerator.Verify(sg => sg.SaveStatement(_housekeeper.Oid, _housekeeper.FullName, _statementDate), Times.Never); 
+            _statementGenerator.Verify(sg => sg.SaveStatement(_housekeeper.Oid, _housekeeper.FullName, _statementDate), Times.Never);
         }
 
         [Test]
@@ -78,7 +78,7 @@ namespace TestNinja.UnitTests.Mocking
         }
 
         [Test]
-        public void SendStatementEmails_WhenCalled_EmailTheStatement ()
+        public void SendStatementEmails_WhenCalled_EmailTheStatement()
         {
             _statementGenerator.Setup(sg =>
                 sg.SaveStatement(_housekeeper.Oid, _housekeeper.FullName, _statementDate)).Returns(_statementFileName);
@@ -92,6 +92,27 @@ namespace TestNinja.UnitTests.Mocking
                     _statementFileName,
                     It.IsAny<string>()
                 ));
+        }
+
+        [Test]
+        public void SendStatementEmails_EmailSendingFails_DisplayAMessageBox()
+        {
+            _statementGenerator.Setup(sg =>
+                sg.SaveStatement(_housekeeper.Oid, _housekeeper.FullName, _statementDate)).Returns(_statementFileName);
+
+            _emailSender.Setup(es => es.EmailFile(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>())).Throws<Exception>();
+
+            _service.SendStatementEmails(_statementDate);
+            VerifyMessageBoxDisplayed();
+        }
+
+        private void VerifyMessageBoxDisplayed()
+        {
+            _xtraMessageBox.Verify(mb => mb.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.OK));
         }
 
         private void VerifyEmailNotSent(string statementFileName)
